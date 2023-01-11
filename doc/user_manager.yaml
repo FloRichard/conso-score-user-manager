@@ -1,0 +1,149 @@
+openapi: '3.0.0'
+info:
+  title: 'User manager'
+  version: '0.0.0'
+
+tags:
+  - name: User
+paths:
+  /login:
+    post:
+      description: Login the user
+      tags:
+        - User
+
+      requestBody:
+        description: Credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/credentials'
+      responses:
+        '200':
+          $ref: '#/components/responses/200OK'
+        '400':
+          description: Bad request
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+  /register:
+    post:
+      description: Register a user
+      tags:
+        - User
+      requestBody:
+        description: User information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '201':
+          description: User is registered
+        '400':
+          description: Bad request
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+  /user/{user_id}:
+    get:
+      description: Get user information
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+          description: The user id
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUser200OK'
+        '400':
+          description: Bad request
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    credentials:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+      example:
+        login: Jean
+        password: coucou1,
+
+    user:
+      type: object
+      properties:
+        name:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+        status:
+          type: string
+        maker_name:
+          type: string
+        maker_location:
+          type: string
+      example:
+        login: MyLogin
+        name: Jean Dupont
+        password: coucou1,
+        status: MAKER or SELLER
+        maker_name: Jean agriculture
+        maker_location: 1 rue du code, 14000, Caen
+
+    user_info:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+        maker_name:
+          type: string
+        maker_location:
+          type: string
+      example:
+        name: Jean Dupont
+        status: MAKER
+        maker_name: Jean agriculture
+        maker_location: 1 rue du code, 14000, Caen
+
+  responses:
+    200OK:
+      description: Returns the status of the user (MAKER or SELLER) with its ID and the ID of the make or the seller.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              entity_id:
+                type: string
+              user_id:
+                type: string
+
+    GetUser200OK:
+      description: User information without his password
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/user_info'
