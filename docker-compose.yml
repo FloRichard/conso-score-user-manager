@@ -1,0 +1,21 @@
+services:
+  conso_score_auth:
+    container_name: conso_score_auth
+    restart: unless-stopped
+    build: .
+    depends_on:
+      - conso_score_postgresql
+    ports:
+      - "5001:5000"
+
+  conso_score_postgresql:
+    container_name: conso_score_postgresql
+    image: postgres
+    restart: always
+    ports:
+      - 15432:5432
+    volumes:
+      - ../conso-score-back-office/database:/var/lib/postgresql/dev/database/conso-score
+      - ../conso-score-back-office/database/set_up_db.sh:/docker-entrypoint-initdb.d/1-set_up_db.sh:ro
+    environment:
+      POSTGRES_PASSWORD: example

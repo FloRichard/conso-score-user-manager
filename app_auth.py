@@ -5,10 +5,13 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 from flask import Flask, request, abort
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import CORS
+from flask_cors import cross_origin
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://'+os.environ['DB_USERNAME']+':'+os.environ['DB_PASSWORD']+'@localhost:15432/consoscore'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://'+"conso_score_user"+':'+"conso_score_user_pwd"+'@conso_score_postgresql:5432/consoscore'
 db = SQLAlchemy(app)
 
 with app.app_context():
@@ -39,6 +42,7 @@ class Seller(db.Model):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 @app.route('/register', methods=['POST'])
+@cross_origin()
 def register():
     body = request.get_json()
     password_hash = generate_password_hash(body['password'], method='sha256')
@@ -65,6 +69,7 @@ def register():
     return "User is registered", 201
 
 @app.route('/user/<string:user_id>', methods=['GET'])
+@cross_origin()
 def get_user(user_id):
     try:
         result = db.session.query(User, Status).join(Status).filter(User.user_id == user_id).first()
@@ -85,6 +90,7 @@ def get_user(user_id):
     return r
 
 @app.route('/login', methods=['POST'])
+@cross_origin()
 def login():
     body = request.get_json()
     login = body['login']
