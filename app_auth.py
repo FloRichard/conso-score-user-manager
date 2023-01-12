@@ -93,14 +93,17 @@ def get_user(user_id):
 @app.route('/login', methods=['POST'])
 @cross_origin()
 def login():
+    print("here")
     body = request.get_json()
     login = body['login']
     password = body['password']
-
+    print(login, password)
     user = db.session.query(User).filter_by(login=login).first()
 
-    if not user or not check_password_hash(user.password, password):
-        abort(404)
+    if not user: #or not check_password_hash(user.password, password):
+        abort(401)
+    if user.password != password:
+        abort(401)
 
     status = db.session.query(Status).filter_by(status_id=user.status_id).first()
     if status.label == 'MAKER':
