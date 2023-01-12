@@ -9,7 +9,7 @@ from flask_cors import CORS
 from flask_cors import cross_origin
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+cors = CORS(app, resources={r"*": {"origins": "*"}})
 
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://'+"conso_score_user"+':'+"conso_score_user_pwd"+'@conso_score_postgresql:5432/consoscore'
 db = SQLAlchemy(app)
@@ -68,15 +68,16 @@ def register():
     db.session.commit()
     return "User is registered", 201
 
-@app.route('/user/<string:user_id>', methods=['GET'])
+@app.route('/user/<user_id>', methods=['GET'])
 @cross_origin()
 def get_user(user_id):
+    print("here")
     try:
         result = db.session.query(User, Status).join(Status).filter(User.user_id == user_id).first()
     except exc.StatementError: # wrong uuid format
-        abort(400)
+        abort(401)
     if not result:
-        abort(404)
+        abort(402)
     user, status = result
     r = {'name': user.name, 'status': status.label}
     if status.maker_id == None:
@@ -106,3 +107,5 @@ def login():
         return {'user_id': user.user_id, 'entity_id': status.maker_id, 'status': status.label}
     else:
         return {'user_id': user.user_id, 'entity_id': status.seller_id, 'status': status.label}
+
+#app.run(debug=True, port=5000)

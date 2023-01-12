@@ -12,7 +12,7 @@ ENV FLASK_APP=app_auth \
     FLASK_ENV=production \
     FLASK_DEBUG=on
 
-EXPOSE 5000
+EXPOSE 5001
 
 COPY . .
 
