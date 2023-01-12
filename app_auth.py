@@ -8,7 +8,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'secret-key'
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql+psycopg2://'+os.environ['DB_USERNAME']+':'+os.environ['DB_PASSWORD']+'@localhost:15432/consoscore'
 db = SQLAlchemy(app)
 
