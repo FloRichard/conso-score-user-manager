@@ -18,6 +18,6 @@ To run the project with docker run `docker-compose up` at the root of the projec
 
 ## Documentation
 
-All endpoints are documented in swagger in `/doc/swagger.yaml`.
+All endpoints are documented in swagger in `/doc/user_manager.yaml`.
 
 Open [swagger-editor](https://editor.swagger.io/) and copy past the file content to see the specifications.
